@@ -11,8 +11,12 @@ class CourseController {
             });
     }
 
-    courseDetail(req, res) {
-        res.send('course');
+    courseDetail(req, res, next) {
+        getModel.findOne({ slug: req.params.slug}).lean()
+            .then(course => {
+                res.render('coursedetail', { course })
+            })
+            .catch(next)
     }
 }
 
