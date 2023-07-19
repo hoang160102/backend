@@ -2,7 +2,8 @@ const getModel = require('../models/course');
 class CourseController {
     course(req, res, next) {
         getModel
-            .find({}).lean()
+            .find({})
+            .lean()
             .then((courses) => {
                 res.render('course', { courses });
             })
@@ -12,9 +13,28 @@ class CourseController {
     }
 
     courseDetail(req, res, next) {
-        getModel.findOne({ slug: req.params.slug}).lean()
-            .then(course => {
-                res.render('coursedetail', { course })
+        getModel
+            .findOne({ slug: req.params.slug })
+            .lean()
+            .then((course) => {
+                res.render('course-navigation/coursedetail', { course });
+            })
+            .catch(next);
+    }
+    
+    //create /course/create
+    create(req, res, next) {
+        res.render('course-navigation/create');
+    }
+
+    // create /course/store
+    store(req, res, next) {
+        const formData = req.body
+        formData.image = `https://img.youtube.com/vi/${req.body.videoId}/sddefault.jpg`
+        const newCourse = new getModel(formData)
+        newCourse.save()
+            .then(() => {
+                res.redirect('/course')
             })
             .catch(next)
     }
