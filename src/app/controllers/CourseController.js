@@ -21,7 +21,7 @@ class CourseController {
             })
             .catch(next);
     }
-    
+
     //create /course/create
     create(req, res, next) {
         res.render('course-navigation/create');
@@ -29,13 +29,31 @@ class CourseController {
 
     // create /course/store
     store(req, res, next) {
-        const formData = req.body
-        formData.image = `https://img.youtube.com/vi/${req.body.videoId}/sddefault.jpg`
-        const newCourse = new getModel(formData)
-        newCourse.save()
+        const formData = req.body;
+        formData.image = `https://img.youtube.com/vi/${req.body.videoId}/sddefault.jpg`;
+        const newCourse = new getModel(formData);
+        newCourse
+            .save()
             .then(() => {
-                res.redirect('/course')
+                res.redirect('/course');
             })
+            .catch(next);
+    }
+
+    //course/id/edit
+
+    edit(req, res, next) {
+        getModel.findById(req.params.id).lean()
+            .then(course => {
+                res.render('course-navigation/edit', { course })
+            })
+            .catch(next)
+    }
+
+    //[PUT]
+    update(req, res, next) {
+        getModel.updateOne({ _id: req.params.id }, req.body)
+            .then(() => res.redirect('/me/stored/courses'))
             .catch(next)
     }
 }
